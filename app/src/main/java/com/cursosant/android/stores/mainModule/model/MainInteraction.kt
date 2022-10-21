@@ -42,17 +42,6 @@ class MainInteraction {
         StoreApplication.storeAPI.addToRequestQueue(jsonObject)
     }
 
-    fun getStoresRoom(callback: (MutableList<StoreEntity>) -> Unit){
-        doAsync {
-            val storesList = StoreApplication.database.storeDao().getAllStores()
-            uiThread {
-                val json = Gson().toJson(storesList)
-                Log.i("gson", json)
-                callback(storesList)
-            }
-        }
-    }
-
     fun deleteStore(storeEntity: StoreEntity, callback: (StoreEntity) -> Unit) {
         doAsync {
             StoreApplication.database.storeDao().deleteStore(storeEntity)
