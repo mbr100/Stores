@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
+@Suppress("DEPRECATION")
 class EditStoreFragment : Fragment() {
 
     private lateinit var mBinding: FragmentEditStoreBinding
@@ -56,7 +57,7 @@ class EditStoreFragment : Fragment() {
     private fun setupViewModel() {
         mEditStoreViewModel.getStoreSelected().observe(viewLifecycleOwner) {
             mStoreEntity = it
-            if (it.id != 0L) {
+            if (it != null) {
                 mIsEditMode = true
                 setUiStore(it)
             } else {
@@ -71,7 +72,7 @@ class EditStoreFragment : Fragment() {
             when (result){
                 is Long -> {
                     mStoreEntity.id = result
-                    mEditStoreViewModel.setStoreSelected(mStoreEntity!!)
+                    mEditStoreViewModel.setStoreSelected(mStoreEntity)
                     Toast.makeText(mActivity, R.string.edit_store_message_save_success, Toast.LENGTH_SHORT).show()
                     mActivity?.onBackPressed()
                 }
@@ -167,34 +168,10 @@ class EditStoreFragment : Fragment() {
         return isValid
     }
 
-    private fun validateFields(): Boolean {
-        var isValid = true
-
-        if (mBinding.etPhotoUrl.text.toString().trim().isEmpty()){
-            mBinding.tilPhotoUrl.error = getString(R.string.helper_required)
-            mBinding.etPhotoUrl.requestFocus()
-            isValid = false
-        }
-
-        if (mBinding.etPhone.text.toString().trim().isEmpty()){
-            mBinding.tilPhone.error = getString(R.string.helper_required)
-            mBinding.etPhone.requestFocus()
-            isValid = false
-        }
-
-        if (mBinding.etName.text.toString().trim().isEmpty()){
-            mBinding.tilName.error = getString(R.string.helper_required)
-            mBinding.etName.requestFocus()
-            isValid = false
-        }
-
-        return isValid
-    }
-
     private fun hideKeyboard(){
-        val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (view != null){
-            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+            imm?.hideSoftInputFromWindow(requireView().windowToken, 0)
         }
     }
 
